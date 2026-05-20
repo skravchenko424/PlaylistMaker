@@ -22,6 +22,7 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/search_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             app:cornerRadius="16dp"
@@ -37,6 +38,7 @@
             android:textAllCaps="false"/>
 
         <Button
+            android:id="@+id/media_library_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             app:cornerRadius="16dp"
@@ -52,6 +54,7 @@
             android:textAllCaps="false"/>
 
         <Button
+            android:id="@+id/settings_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             app:cornerRadius="16dp"
