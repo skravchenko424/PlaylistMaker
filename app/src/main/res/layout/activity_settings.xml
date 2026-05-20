@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,6 +21,7 @@
         android:paddingTop="14dp">
 
         <ImageView
+            android:id="@+id/back_from_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -43,7 +52,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp">
+            android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,36 +60,34 @@
                 android:layout_gravity="start|center_vertical"
                 android:text="@string/theme_switcher"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size_settings_screen" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/material_switch2"
+            <Switch
+                android:id="@+id/simple_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:checked="true"
-                app:useMaterialThemeColors="true"
-                />
+                android:checked="true" />
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp">
+            android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center_vertical"
                 android:text="@string/share"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size_settings_screen" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center_vertical"
                 android:scaleType="centerCrop"
                 android:src="@drawable/share"/>
 
@@ -89,20 +96,20 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp">
+            android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center_vertical"
                 android:text="@string/support"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size_settings_screen" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center_vertical"
                 android:scaleType="centerCrop"
                 android:src="@drawable/support"/>
 
@@ -111,20 +118,20 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="21dp">
+            android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center_vertical"
                 android:text="@string/license_agreement"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size_settings_screen" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center_vertical"
                 android:scaleType="centerCrop"
                 android:src="@drawable/arrow_forward"/>
 
@@ -132,3 +139,5 @@
 
     </LinearLayout>
 </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
