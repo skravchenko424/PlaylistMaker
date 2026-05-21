@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:text="@string/main_screen_title"
-        android:textColor="#ffffff"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -37,11 +37,11 @@
             app:icon="@drawable/search_button"
             app:iconGravity="textStart"
             app:iconTint="@color/black"
-            app:iconPadding="10dp"
+            app:iconPadding="@dimen/main_screen_button_icons_padding"
             android:layout_weight="1"
-            android:backgroundTint="#ffffff"
+            android:backgroundTint="@color/white"
             android:text="@string/search_button_text"
-            android:textColor="#1A1B22"
+            android:textColor="@color/black_light"
             android:textSize="@dimen/text_size_main_screen"
             android:textAllCaps="false"/>
 
@@ -53,11 +53,11 @@
             app:icon="@drawable/media_library_button"
             app:iconGravity="textStart"
             app:iconTint="@color/black"
-            app:iconPadding="10dp"
+            app:iconPadding="@dimen/main_screen_button_icons_padding"
             android:layout_weight="1"
-            android:backgroundTint="#ffffff"
+            android:backgroundTint="@color/white"
             android:text="@string/media_library_button_text"
-            android:textColor="#1A1B22"
+            android:textColor="@color/black_light"
             android:textSize="@dimen/text_size_main_screen"
             android:textAllCaps="false"/>
 
@@ -69,11 +69,11 @@
             app:icon="@drawable/settings_button"
             app:iconGravity="textStart"
             app:iconTint="@color/black"
-            app:iconPadding="10dp"
+            app:iconPadding="@dimen/main_screen_button_icons_padding"
             android:layout_weight="1"
-            android:backgroundTint="#ffffff"
+            android:backgroundTint="@color/white"
             android:text="@string/settings_button_text"
-            android:textColor="#1A1B22"
+            android:textColor="@color/black_light"
             android:textSize="@dimen/text_size_main_screen"
             android:textAllCaps="false"/>
     </LinearLayout>
