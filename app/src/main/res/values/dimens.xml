@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_main_screen">22sp</dimen>
+    <dimen name="text_size_settings_screen">16sp</dimen>
+    <dimen name="settings_list_vertical_margin">21dp</dimen>
+    <dimen name="main_screen_button_rounding">16dp</dimen>
+    <dimen name="main_screen_button_def_height">60dp</dimen>
+    <dimen name="main_screen_button_icons_padding">10dp</dimen>
+</resources>
