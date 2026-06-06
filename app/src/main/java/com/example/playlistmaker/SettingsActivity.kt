@@ -2,22 +2,53 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        val buttonBack = findViewById<ImageView>(R.id.back_from_settings_button)
-        buttonBack.setOnClickListener {
+        findViewById<ImageView>(R.id.back_from_settings_button).setOnClickListener {
             finish()
+        }
+
+        findViewById<ImageView>(R.id.share_button).setOnClickListener {
+            val sendIntent = Intent()
+            sendIntent.setAction(Intent.ACTION_SEND)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
+            sendIntent.setType("text/plain")
+
+            val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share_title))
+            startActivity(shareIntent)
+        }
+
+        findViewById<ImageView>(R.id.contact_support_button).setOnClickListener {
+            val supportIntent = Intent(Intent.ACTION_SENDTO)
+            supportIntent.data = "mailto:".toUri()
+            supportIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_mail)))
+            supportIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
+            supportIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_text_body))
+
+            startActivity(supportIntent)
+        }
+
+
+        findViewById<ImageView>(R.id.license_agreement_button).setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW,
+                getString(R.string.license_agreement_link).toUri())
+            startActivity(browserIntent)
         }
     }
 }
