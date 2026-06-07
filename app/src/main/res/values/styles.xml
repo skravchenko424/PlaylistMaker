@@ -64,7 +64,7 @@
         <item name="android:scaleType">centerCrop</item>
         <item name="android:tintMode">src_in</item>
         <item name="android:tint">@color/screen_title</item>
-        <item name="android:src">@drawable/arrow_back</item>
+        <item name="android:src">@drawable/ic_back_arrow_16</item>
     </style>
 
     <style name="SettingsSwitchStyle">

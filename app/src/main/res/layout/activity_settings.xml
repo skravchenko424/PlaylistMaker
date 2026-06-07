@@ -63,7 +63,7 @@
             <ImageView
                 android:id="@+id/share_button"
                 style="@style/SettingsItemIconStyle"
-                android:src="@drawable/share"
+                android:src="@drawable/ic_share_button_24"
                 android:contentDescription="@null"/>
 
         </FrameLayout>
@@ -80,7 +80,7 @@
             <ImageView
                 android:id="@+id/contact_support_button"
                 style="@style/SettingsItemIconStyle"
-                android:src="@drawable/support"
+                android:src="@drawable/ic_support_button_24"
                 android:contentDescription="@null"/>
 
         </FrameLayout>
@@ -97,7 +97,7 @@
             <ImageView
                 android:id="@+id/license_agreement_button"
                 style="@style/SettingsItemIconStyle"
-                android:src="@drawable/arrow_forward"
+                android:src="@drawable/ic_forward_arrow_24"
                 android:contentDescription="@null"/>
 
         </FrameLayout>

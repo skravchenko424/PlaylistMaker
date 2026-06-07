@@ -1,8 +1,6 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -11,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,22 +35,10 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
         }
 
-        val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                searchText = s ?: ""
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // empty
-            }
+        inputEditText.doOnTextChanged { text, _, _, _ ->
+            clearButton.visibility = clearButtonVisibility(text)
+            searchText = text ?: ""
         }
-        inputEditText.addTextChangedListener(simpleTextWatcher)
-
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
