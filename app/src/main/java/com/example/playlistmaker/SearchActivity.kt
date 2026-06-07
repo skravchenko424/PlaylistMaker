@@ -1,10 +1,15 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
 
 class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,5 +21,50 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        findViewById<ImageView>(R.id.back_from_search_button).setOnClickListener {
+            finish()
+        }
+
+        val inputEditText = findViewById<EditText>(R.id.etSearch)
+        val clearButton = findViewById<ImageView>(R.id.ivClear)
+
+        clearButton.setOnClickListener {
+            inputEditText.setText("")
+            // ask input edit to hide the keyboard
+            inputEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
+        }
+
+        inputEditText.doOnTextChanged { text, _, _, _ ->
+            clearButton.visibility = clearButtonVisibility(text)
+            searchText = text ?: ""
+        }
+    }
+
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+        return if (s.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    private var searchText: CharSequence = SEARCH_TEXT_DEF
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putCharSequence(SEARCH_TEXT, searchText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        searchText = savedInstanceState.getCharSequence(SEARCH_TEXT, SEARCH_TEXT_DEF)
+        val inputEditText = findViewById<EditText>(R.id.etSearch)
+        inputEditText.setText(searchText)
+    }
+
+    companion object {
+        const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_TEXT_DEF = ""
     }
 }

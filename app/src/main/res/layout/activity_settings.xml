@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    android:orientation="vertical">
+    style="@style/ActivityMainLayoutStyle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,22 +19,12 @@
 
         <ImageView
             android:id="@+id/back_from_settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerCrop"
-            android:src="@drawable/arrow_back"
-            android:tintMode="src_in"
-            app:iconTint="@color/black" />
+            android:contentDescription="@string/back_arrow_cd"
+            style="@style/BackArrowStyle" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingStart="28dp"
             android:text="@string/settings_screen_title"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            style="@style/ScreenTitleStyle" />
 
     </LinearLayout>
 
@@ -55,19 +42,12 @@
             android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/theme_switcher"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_settings_screen" />
+                style="@style/SettingsItemTextStyle"
+                android:text="@string/theme_switcher" />
 
             <Switch
                 android:id="@+id/simple_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:checked="true" />
+                style="@style/SettingsSwitchStyle" />
 
         </FrameLayout>
 
@@ -77,19 +57,14 @@
             android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/share"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_settings_screen" />
+                style="@style/SettingsItemTextStyle"
+                android:text="@string/share" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:scaleType="centerCrop"
-                android:src="@drawable/share"/>
+                android:id="@+id/share_button"
+                style="@style/SettingsItemIconStyle"
+                android:src="@drawable/ic_share_button_24"
+                android:contentDescription="@null"/>
 
         </FrameLayout>
 
@@ -99,19 +74,14 @@
             android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/support"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_settings_screen" />
+                style="@style/SettingsItemTextStyle"
+                android:text="@string/support" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:scaleType="centerCrop"
-                android:src="@drawable/support"/>
+                android:id="@+id/contact_support_button"
+                style="@style/SettingsItemIconStyle"
+                android:src="@drawable/ic_support_button_24"
+                android:contentDescription="@null"/>
 
         </FrameLayout>
 
@@ -121,19 +91,14 @@
             android:layout_marginVertical="@dimen/settings_list_vertical_margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:text="@string/license_agreement"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_settings_screen" />
+                style="@style/SettingsItemTextStyle"
+                android:text="@string/license_agreement" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:scaleType="centerCrop"
-                android:src="@drawable/arrow_forward"/>
+                android:id="@+id/license_agreement_button"
+                style="@style/SettingsItemIconStyle"
+                android:src="@drawable/ic_forward_arrow_24"
+                android:contentDescription="@null"/>
 
         </FrameLayout>
 

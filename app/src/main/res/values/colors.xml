@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="blue">#FF3772E7</color>
-    <color name="black_light">#FF1A1B22</color>
+    <color name="main_screen_title">#FFFFFFFF</color>
+    <color name="main_screen_background">#FF3772E7</color>
+    <color name="main_screen_button_background">#FFFFFFFF</color>
+    <color name="main_screen_button_text">#FF1A1B22</color>
+    <color name="activity_background">#FFFFFFFF</color>
+    <color name="search_text_input_elements">#FFAEAFB4</color>
+    <color name="search_text">#FF1A1B22</color>
+    <color name="search_text_background">#FFE6E8EB</color>
+    <color name="settings_item_text">#FF000000</color>
+    <color name="settings_item_icon">#FFAEAFB4</color>
+    <color name="screen_title">#FF1A1B22</color>
+    <color name="switchThumbTint">#FF00D6C3</color>
+    <color name="switchTrackTint">#FF76EAE0</color>
 </resources>
