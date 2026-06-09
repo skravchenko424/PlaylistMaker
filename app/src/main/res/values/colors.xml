@@ -8,6 +8,8 @@
     <color name="search_text_input_elements">#FFAEAFB4</color>
     <color name="search_text">#FF1A1B22</color>
     <color name="search_text_background">#FFE6E8EB</color>
+    <color name="track_name">#FF000000</color>
+    <color name="track_info">#FFAEAFB4</color>
     <color name="settings_item_text">#FF000000</color>
     <color name="settings_item_icon">#FFAEAFB4</color>
     <color name="screen_title">#FF1A1B22</color>
