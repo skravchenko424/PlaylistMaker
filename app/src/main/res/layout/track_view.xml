@@ -45,11 +45,12 @@
 
             <TextView
                 android:id="@+id/artist_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/track_info"
                 android:layout_gravity="fill_horizontal"
                 android:textSize="@dimen/track_info_text_size"
+                android:layout_weight="1"
                 android:fontFamily="@font/ys_display_regular"
                 android:maxLines="1"
                 android:ellipsize="end"
