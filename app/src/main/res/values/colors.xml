@@ -15,4 +15,7 @@
     <color name="screen_title">#FF1A1B22</color>
     <color name="switchThumbTint">#FF00D6C3</color>
     <color name="switchTrackTint">#FF76EAE0</color>
+    <color name="search_reload_button_color">#FF1A1B22</color>
+    <color name="search_reload_button_text_color">#FFFFFFFF</color>
+    <color name="search_error_placeholder_phones_color">#FF1A1B22</color>
 </resources>
