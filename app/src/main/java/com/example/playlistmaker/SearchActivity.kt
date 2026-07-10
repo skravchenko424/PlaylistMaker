@@ -185,14 +185,6 @@ class SearchActivity : AppCompatActivity() {
         reloadButton.visibility = View.GONE
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(
-            this,
-            message,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val SEARCH_TEXT_DEF = ""
