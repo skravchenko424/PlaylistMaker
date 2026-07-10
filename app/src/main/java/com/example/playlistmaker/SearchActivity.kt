@@ -6,7 +6,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,6 +25,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TracksAdapter
     private val trackList = mutableListOf<Track>()
     private lateinit var itunesService: ITunesAPIService
+    private lateinit var placeHolder: ImageView
+    private lateinit var errorText: TextView
+    private lateinit var reloadButton: MaterialButton
+    private lateinit var inputEditText: EditText
+    private lateinit var clearButton: ImageView
+    private lateinit var trackListView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +46,12 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        val inputEditText = findViewById<EditText>(R.id.etSearch)
-        val clearButton = findViewById<ImageView>(R.id.ivClear)
+        inputEditText = findViewById(R.id.etSearch)
+        clearButton = findViewById(R.id.ivClear)
+        placeHolder = findViewById(R.id.ivSearchErrorPlaceholder)
+        errorText = findViewById(R.id.tvSearchErrorText)
+        reloadButton = findViewById(R.id.search_reload_button)
+        trackListView = findViewById(R.id.track_list_view)
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -54,12 +64,11 @@ class SearchActivity : AppCompatActivity() {
             searchText = text ?: ""
         }
 
-        findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button).setOnClickListener {
+        findViewById<MaterialButton>(R.id.search_reload_button).setOnClickListener {
             performSearch()
         }
 
         // setup track list view
-        val trackListView = findViewById<RecyclerView>(R.id.track_list_view)
         trackListView.layoutManager = LinearLayoutManager(this)
         trackAdapter = TracksAdapter(trackList)
         trackListView.adapter = trackAdapter
@@ -110,7 +119,6 @@ class SearchActivity : AppCompatActivity() {
 
         hidePlaceHolder()
 
-        val inputEditText = findViewById<EditText>(R.id.etSearch)
         val searchText = inputEditText.text.toString().trim()
 
         if ( searchText.isEmpty() ) {
@@ -119,7 +127,7 @@ class SearchActivity : AppCompatActivity() {
 
         itunesService.findSong(searchText).enqueue(object : Callback<SearchResponse> {
             override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                if (response.code() == 200) {
+                if (response.isSuccessful) {
                     val searchResponse = response.body()
                     if (searchResponse != null && searchResponse.results.isNotEmpty()) {
                         trackList.clear()
@@ -149,39 +157,28 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showNothingFound() {
-        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
         placeHolder.visibility = View.VISIBLE
         placeHolder.setImageResource(R.drawable.ic_nothing_found_placeholder_120)
 
-        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
         errorText.setText(getString(R.string.error_nothing_found))
         errorText.visibility = View.VISIBLE
 
-        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
         reloadButton.visibility = View.GONE
     }
 
     private fun showNetworkError() {
-        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
         placeHolder.visibility = View.VISIBLE
         placeHolder.setImageResource(R.drawable.ic_network_error_placeholder_120)
 
-        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
         errorText.setText(getString(R.string.error_network_failure))
         errorText.visibility = View.VISIBLE
 
-        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
         reloadButton.visibility = View.VISIBLE
     }
 
     private fun hidePlaceHolder() {
-        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
         placeHolder.visibility = View.GONE
-
-        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
         errorText.visibility = View.GONE
-
-        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
         reloadButton.visibility = View.GONE
     }
 
