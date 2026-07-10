@@ -5,6 +5,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackAdapter: TracksAdapter
     private val trackList = mutableListOf<Track>()
+    private lateinit var itunesService: ITunesAPIService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,10 @@ class SearchActivity : AppCompatActivity() {
             searchText = text ?: ""
         }
 
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button).setOnClickListener {
+            performSearch()
+        }
+
         // setup track list view
         val trackListView = findViewById<RecyclerView>(R.id.track_list_view)
         trackListView.layoutManager = LinearLayoutManager(this)
@@ -63,17 +69,12 @@ class SearchActivity : AppCompatActivity() {
             .baseUrl(itunesBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        val itunesService = retrofit.create(ITunesAPIService::class.java)
+        itunesService = retrofit.create(ITunesAPIService::class.java)
 
         // Search on Enter key
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val searchText = inputEditText.text.toString().trim()
-                if (searchText.isNotEmpty()) {
-                    performSearch(itunesService, searchText)
-                } else {
-                    showToast(getString(R.string.please_enter_search_term))
-                }
+                performSearch()
                 true
             }
             false
@@ -102,12 +103,19 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(searchText)
     }
 
-    private fun performSearch(itunesService: ITunesAPIService, searchText: String) {
+    private fun performSearch() {
         // Clear previous results and show loading state
         trackList.clear()
         trackAdapter.notifyDataSetChanged()
 
-        println("Searching for: $searchText")
+        hidePlaceHolder()
+
+        val inputEditText = findViewById<EditText>(R.id.etSearch)
+        val searchText = inputEditText.text.toString().trim()
+
+        if ( searchText.isEmpty() ) {
+            return
+        }
 
         itunesService.findSong(searchText).enqueue(object : Callback<SearchResponse> {
             override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
@@ -121,14 +129,13 @@ class SearchActivity : AppCompatActivity() {
                         // No results found
                         trackList.clear()
                         trackAdapter.notifyDataSetChanged()
-                        showToast("No results found")
+                        showNothingFound()
                     }
                 } else {
                     // Error response
                     trackList.clear()
                     trackAdapter.notifyDataSetChanged()
-                    val errorBody = response.errorBody()?.string()
-                    showToast("Error: ${response.code()} - $errorBody")
+                    showNetworkError()
                 }
             }
 
@@ -136,9 +143,46 @@ class SearchActivity : AppCompatActivity() {
                 // Network failure
                 trackList.clear()
                 trackAdapter.notifyDataSetChanged()
-                showToast("Network error: ${t.message}")
+                showNetworkError()
             }
         })
+    }
+
+    private fun showNothingFound() {
+        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
+        placeHolder.visibility = View.VISIBLE
+        placeHolder.setImageResource(R.drawable.ic_nothing_found_placeholder_120)
+
+        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
+        errorText.setText(getString(R.string.error_nothing_found))
+        errorText.visibility = View.VISIBLE
+
+        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
+        reloadButton.visibility = View.GONE
+    }
+
+    private fun showNetworkError() {
+        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
+        placeHolder.visibility = View.VISIBLE
+        placeHolder.setImageResource(R.drawable.ic_network_error_placeholder_120)
+
+        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
+        errorText.setText(getString(R.string.error_network_failure))
+        errorText.visibility = View.VISIBLE
+
+        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
+        reloadButton.visibility = View.VISIBLE
+    }
+
+    private fun hidePlaceHolder() {
+        val placeHolder = findViewById<ImageView>(R.id.ivSearchErrorPlaceholder)
+        placeHolder.visibility = View.GONE
+
+        val errorText = findViewById<TextView>(R.id.tvSearchErrorText)
+        errorText.visibility = View.GONE
+
+        val reloadButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.search_reload_button)
+        reloadButton.visibility = View.GONE
     }
 
     private fun showToast(message: String) {

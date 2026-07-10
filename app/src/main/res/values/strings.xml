@@ -21,4 +21,7 @@
     <string name="search_clear_button_cd">Очистить введенный текст</string>
     <string name="please_enter_search_term">Введите текст для поиска</string>
     <string name="url_itunes">https://itunes.apple.com</string>
+    <string name="search_reload_button_text">Обновить</string>
+    <string name="error_nothing_found">Ничего не нашлось</string>
+    <string name="error_network_failure">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету\n</string>
 </resources>
