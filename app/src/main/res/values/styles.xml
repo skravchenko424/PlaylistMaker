@@ -66,13 +66,4 @@
         <item name="android:tint">@color/screen_title</item>
         <item name="android:src">@drawable/ic_back_arrow_16</item>
     </style>
-
-    <style name="SettingsSwitchStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">end|center_vertical</item>
-        <item name="android:checked">true</item>
-        <item name="android:thumbTint">@color/switchThumbTint</item>
-        <item name="android:trackTint">@color/switchTrackTint</item>
-    </style>
 </resources>
