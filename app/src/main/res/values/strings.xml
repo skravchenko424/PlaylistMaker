@@ -24,4 +24,6 @@
     <string name="search_reload_button_text">Обновить</string>
     <string name="error_nothing_found">Ничего не нашлось</string>
     <string name="error_network_failure">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету\n</string>
+    <string name="historyHeaderText">Вы искали</string>
+    <string name="clear_history">Очистить историю</string>
 </resources>

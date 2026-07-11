@@ -17,7 +17,7 @@
     <color name="switch_thumb_tint_unchecked">#FFAEAFB4</color>
     <color name="switch_track_tint_checked">#FF86C0BB</color>
     <color name="switch_track_tint_unchecked">#FFE6E8EB</color>
-    <color name="search_reload_button_color">#FF1A1B22</color>
-    <color name="search_reload_button_text_color">#FFFFFFFF</color>
+    <color name="action_button_color">#FF1A1B22</color>
+    <color name="action_button_text_color">#FFFFFFFF</color>
     <color name="search_error_placeholder_phones_color">#FF1A1B22</color>
 </resources>

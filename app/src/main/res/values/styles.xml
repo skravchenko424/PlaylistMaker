@@ -66,4 +66,13 @@
         <item name="android:tint">@color/screen_title</item>
         <item name="android:src">@drawable/ic_back_arrow_16</item>
     </style>
+
+    <style name="ActionButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/action_button_color</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/action_button_text_color</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">@dimen/action_button_rounding</item>
+    </style>
 </resources>

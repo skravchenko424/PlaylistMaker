@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -31,6 +32,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var trackListView: RecyclerView
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistoryHeaderText: TextView
+    private lateinit var clearHistoryButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,10 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        // Initialize SearchHistory
+        val sharedPreferences = getSharedPreferences("playlist_maker_prefs", MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
         findViewById<ImageView>(R.id.back_from_search_button).setOnClickListener {
             finish()
         }
@@ -52,6 +60,8 @@ class SearchActivity : AppCompatActivity() {
         errorText = findViewById(R.id.tvSearchErrorText)
         reloadButton = findViewById(R.id.search_reload_button)
         trackListView = findViewById(R.id.track_list_view)
+        searchHistoryHeaderText = findViewById(R.id.tvHistoryHeader)
+        clearHistoryButton = findViewById(R.id.clearHistoryButton)
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -59,9 +69,25 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.onEditorAction(EditorInfo.IME_ACTION_DONE)
         }
 
-        inputEditText.doOnTextChanged { text, _, _, _ ->
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()) {
+                showHistory()
+            }
+            else {
+                hideHistory()
+            }
+        }
+
+        inputEditText.doOnTextChanged { text, start, before, count ->
             clearButton.visibility = clearButtonVisibility(text)
             searchText = text ?: ""
+
+            if (inputEditText.hasFocus() && text?.isEmpty() == true)  {
+                showHistory()
+            }
+            else {
+                hideHistory()
+            }
         }
 
         findViewById<MaterialButton>(R.id.search_reload_button).setOnClickListener {
@@ -70,7 +96,10 @@ class SearchActivity : AppCompatActivity() {
 
         // setup track list view
         trackListView.layoutManager = LinearLayoutManager(this)
-        trackAdapter = TracksAdapter(trackList)
+        trackAdapter = TracksAdapter(trackList) { track ->
+            // This lambda will be called when a track is clicked
+            handleTrackClick(track)
+        }
         trackListView.adapter = trackAdapter
 
         val itunesBaseUrl = getString(R.string.url_itunes)
@@ -87,6 +116,10 @@ class SearchActivity : AppCompatActivity() {
                 true
             }
             false
+        }
+
+        clearHistoryButton.setOnClickListener {
+            clearSearchHistory()
         }
     }
 
@@ -113,15 +146,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch() {
-        // Clear previous results and show loading state
-        trackList.clear()
-        trackAdapter.notifyDataSetChanged()
-
+        hideHistory()
         hidePlaceHolder()
 
         val searchText = inputEditText.text.toString().trim()
 
         if ( searchText.isEmpty() ) {
+            showHistory()
             return
         }
 
@@ -156,6 +187,11 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
+    private fun handleTrackClick(track: Track) {
+        // Save the clicked track to history
+        searchHistory.addTrack(track)
+    }
+
     private fun showNothingFound() {
         placeHolder.visibility = View.VISIBLE
         placeHolder.setImageResource(R.drawable.ic_nothing_found_placeholder_120)
@@ -180,6 +216,36 @@ class SearchActivity : AppCompatActivity() {
         placeHolder.visibility = View.GONE
         errorText.visibility = View.GONE
         reloadButton.visibility = View.GONE
+    }
+
+    private fun showHistory() {
+        val historyTracks = searchHistory.getTracks()
+        if (historyTracks.isNotEmpty()) {
+            trackList.clear()
+            trackList.addAll(historyTracks)
+            trackAdapter.notifyDataSetChanged()
+            hidePlaceHolder()
+
+            searchHistoryHeaderText.visibility = View.VISIBLE
+            clearHistoryButton.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideHistory() {
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged()
+        searchHistoryHeaderText.visibility = View.GONE
+        clearHistoryButton.visibility = View.GONE
+    }
+
+    private fun clearSearchHistory() {
+        searchHistory.clearHistory()
+
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged()
+
+        searchHistoryHeaderText.visibility = View.GONE
+        clearHistoryButton.visibility = View.GONE
     }
 
     companion object {
