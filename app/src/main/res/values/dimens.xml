@@ -10,5 +10,5 @@
     <dimen name="track_title_text_size">16sp</dimen>
     <dimen name="track_cover_rounding">2.0dp</dimen>
     <dimen name="search_error_text_size">19sp</dimen>
-    <dimen name="search_reload_button_rounding">54dp</dimen>
+    <dimen name="action_button_rounding">54dp</dimen>
 </resources>

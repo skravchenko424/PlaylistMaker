@@ -13,9 +13,11 @@
     <color name="settings_item_text">#FF000000</color>
     <color name="settings_item_icon">#FFAEAFB4</color>
     <color name="screen_title">#FF1A1B22</color>
-    <color name="switchThumbTint">#FF00D6C3</color>
-    <color name="switchTrackTint">#FF76EAE0</color>
-    <color name="search_reload_button_color">#FF1A1B22</color>
-    <color name="search_reload_button_text_color">#FFFFFFFF</color>
+    <color name="switch_thumb_tint_checked">#FF3D9388</color>
+    <color name="switch_thumb_tint_unchecked">#FFAEAFB4</color>
+    <color name="switch_track_tint_checked">#FF86C0BB</color>
+    <color name="switch_track_tint_unchecked">#FFE6E8EB</color>
+    <color name="action_button_color">#FF1A1B22</color>
+    <color name="action_button_text_color">#FFFFFFFF</color>
     <color name="search_error_placeholder_phones_color">#FF1A1B22</color>
 </resources>

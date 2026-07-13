@@ -8,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var themeSwitcher: SwitchMaterial
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,6 +26,17 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.back_from_settings_button).setOnClickListener {
             finish()
+        }
+
+        themeSwitcher = findViewById(R.id.themeSwitcher)
+
+        // Устанавливаем состояние переключателя в соответствии с текущей темой
+        val app = applicationContext as App
+        themeSwitcher.isChecked = app.darkTheme
+
+        // Устанавливаем слушатель для переключения темы
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
         }
 
         findViewById<ImageView>(R.id.share_button).setOnClickListener {

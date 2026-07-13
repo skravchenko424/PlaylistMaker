@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/ActivityMainLayoutStyle">
+        style="@style/ActivityMainLayoutStyle"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,8 +56,7 @@
                 android:textColor="@color/search_text"
                 android:textColorHint="@color/search_text_input_elements"
                 android:textSize="16sp"
-                android:fontFamily="@font/ys_display_regular"
-                />
+                android:fontFamily="@font/ys_display_regular" />
 
             <ImageView
                 android:id="@+id/ivClear"
@@ -74,16 +74,56 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/track_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="24dp"
-            />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tvHistoryHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/track_name"
+                        android:textSize="@dimen/search_error_text_size"
+                        android:text="@string/historyHeaderText"
+                        android:fontFamily="@font/ys_display_medium"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/track_list_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/clearHistoryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/clear_history"
+                        android:visibility="gone"
+                        style="@style/ActionButtonStyle" />
+
+                </LinearLayout>
+
+            </ScrollView>
 
             <LinearLayout
+                android:id="@+id/errorLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -97,8 +137,8 @@
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ic_nothing_found_placeholder_120"
                     android:padding="12dp"
-                    android:visibility="gone"
-                    tools:ignore="UseAppTint" />
+                    tools:ignore="UseAppTint"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/tvSearchErrorText"
@@ -116,14 +156,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:backgroundTint="@color/search_reload_button_color"
-                    android:fontFamily="@font/ys_display_medium"
                     android:text="@string/search_reload_button_text"
-                    android:textAllCaps="false"
-                    android:textColor="@color/search_reload_button_text_color"
-                    android:textSize="14sp"
                     android:visibility="gone"
-                    app:cornerRadius="@dimen/search_reload_button_rounding" />
+                    style="@style/ActionButtonStyle" />
             </LinearLayout>
 
         </FrameLayout>
