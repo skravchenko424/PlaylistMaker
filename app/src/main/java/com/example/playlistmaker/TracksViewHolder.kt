@@ -15,7 +15,6 @@ class TracksViewHolder(itemView: View,
 
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val artistName: TextView = itemView.findViewById(R.id.artist_name)
-    //private val trackTime: TextView = itemView.findViewById(R.id.track_time)
     private val coverImage: ImageView = itemView.findViewById(R.id.track_image)
 
     // Кешируем SimpleDateFormat один раз на уровне ViewHolder
