@@ -188,7 +188,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun handleTrackClick(track: Track) {
-        // Save the clicked track to history
         searchHistory.addTrack(track)
     }
 
