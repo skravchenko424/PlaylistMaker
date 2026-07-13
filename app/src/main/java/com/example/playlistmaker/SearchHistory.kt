@@ -10,7 +10,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     private val KEY_HISTORY = "search_history"
     private val MAX_HISTORY_SIZE = 10
 
-    // Save a track to history
     fun addTrack(track: Track) {
         val currentHistory = getTracks().toMutableList()
 
@@ -29,7 +28,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         saveTracks(currentHistory)
     }
 
-    // Get all tracks from history
     fun getTracks(): List<Track> {
         val json = sharedPreferences.getString(KEY_HISTORY, null)
         return if (json != null) {
@@ -40,23 +38,19 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         }
     }
 
-    // Clear all history
     fun clearHistory() {
         sharedPreferences.edit().remove(KEY_HISTORY).apply()
     }
 
-    // Save tracks to SharedPreferences
     private fun saveTracks(tracks: List<Track>) {
         val json = gson.toJson(tracks)
         sharedPreferences.edit().putString(KEY_HISTORY, json).apply()
     }
 
-    // Check if history is empty
     fun isEmpty(): Boolean {
         return getTracks().isEmpty()
     }
 
-    // Get history size
     fun size(): Int {
         return getTracks().size
     }
