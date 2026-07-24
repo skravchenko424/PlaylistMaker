@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
@@ -21,7 +23,7 @@ class PlayerActivity : AppCompatActivity() {
             insets
         }
 
-        val track = intent.getParcelableExtra<Track>("track")
+        val track = intent.getParcelableExtra<Track>(Track.TRACK_EXTRA_NAME)
 
         track?.let {
             fillTrackData(it)
@@ -64,10 +66,12 @@ class PlayerActivity : AppCompatActivity() {
         // Преобразуем URL для получения изображения большего размера
         val imageUrl = artworkUrl.replace("100x100", "512x512")
 
+        val roundingRadius = resources.getDimensionPixelSize(R.dimen.track_cover_rounding_big)
         Glide.with(this)
             .load(imageUrl)
             .placeholder(R.drawable.ic_album_image_placeholder_312)
             .centerCrop()
+            .transform(RoundedCorners(roundingRadius))
             .into(imageView)
     }
 
@@ -83,17 +87,17 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun <T> setVisibilityWithValue(
         value: T?,
-        labelView: android.view.View,
-        valueView: android.widget.TextView,
+        labelView: View,
+        valueView: TextView,
         formatter: ((T) -> String)? = null
     ) {
         if (value != null) {
-            labelView.visibility = android.view.View.VISIBLE
+            labelView.visibility = View.VISIBLE
             valueView.text = if (formatter != null) formatter(value) else value.toString()
-            valueView.visibility = android.view.View.VISIBLE
+            valueView.visibility = View.VISIBLE
         } else {
-            labelView.visibility = android.view.View.GONE
-            valueView.visibility = android.view.View.GONE
+            labelView.visibility = View.GONE
+            valueView.visibility = View.GONE
         }
     }
 }

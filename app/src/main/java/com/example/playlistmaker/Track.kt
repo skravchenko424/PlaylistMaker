@@ -18,15 +18,20 @@ data class Track(
     val country: String? = null // Страна исполнителя
 ) : Parcelable {
 
-    // Вспомогательное свойство для получения года из releaseDate
-    val year: String?
-        get() {
+    val year: String? = parseYear(releaseDate)
+
+    companion object {
+        private val INPUT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        private val OUTPUT_YEAR_FORMAT = SimpleDateFormat("yyyy", Locale.getDefault())
+        const val TRACK_EXTRA_NAME = "track"
+
+        private fun parseYear(releaseDate: String?): String? {
             return try {
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                val date = dateFormat.parse(releaseDate ?: return null)
-                SimpleDateFormat("yyyy", Locale.getDefault()).format(date ?: return null)
+                val date = INPUT_DATE_FORMAT.parse(releaseDate ?: return null)
+                OUTPUT_YEAR_FORMAT.format(date ?: return null)
             } catch (e: Exception) {
                 null
             }
         }
+    }
 }
