@@ -26,4 +26,9 @@
     <string name="error_network_failure">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету\n</string>
     <string name="historyHeaderText">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
+    <string name="song_duration">Длительность</string>
+    <string name="song_album">Альбом</string>
+    <string name="song_year">Год</string>
+    <string name="song_genre">Жанр</string>
+    <string name="song_country">Страна</string>
 </resources>

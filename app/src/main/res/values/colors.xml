@@ -8,7 +8,8 @@
     <color name="search_text_input_elements">#FFAEAFB4</color>
     <color name="search_text">#FF1A1B22</color>
     <color name="search_text_background">#FFE6E8EB</color>
-    <color name="track_name">#FF000000</color>
+    <color name="main_text_color">#FF1A1B22</color>
+    <color name="secondary_text_color">#FFAEAFB4</color>
     <color name="track_info">#FFAEAFB4</color>
     <color name="settings_item_text">#FF000000</color>
     <color name="settings_item_icon">#FFAEAFB4</color>
@@ -19,5 +20,5 @@
     <color name="switch_track_tint_unchecked">#FFE6E8EB</color>
     <color name="action_button_color">#FF1A1B22</color>
     <color name="action_button_text_color">#FFFFFFFF</color>
-    <color name="search_error_placeholder_phones_color">#FF1A1B22</color>
+    <color name="pictures_main_color">#FF1A1B22</color>
 </resources>

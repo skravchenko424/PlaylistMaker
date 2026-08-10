@@ -1,7 +1,7 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -190,6 +190,11 @@ class SearchActivity : AppCompatActivity() {
     private fun handleTrackClick(track: Track) {
         // Save the clicked track to history
         searchHistory.addTrack(track)
+
+        val displayIntent = Intent(this, PlayerActivity::class.java).apply {
+            putExtra(Track.TRACK_EXTRA_NAME, track)
+        }
+        startActivity(displayIntent)
     }
 
     private fun showNothingFound() {

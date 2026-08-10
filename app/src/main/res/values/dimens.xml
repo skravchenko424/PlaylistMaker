@@ -9,6 +9,7 @@
     <dimen name="track_info_text_size">11sp</dimen>
     <dimen name="track_title_text_size">16sp</dimen>
     <dimen name="track_cover_rounding">2.0dp</dimen>
+    <dimen name="track_cover_rounding_big">8.0dp</dimen>
     <dimen name="search_error_text_size">19sp</dimen>
     <dimen name="action_button_rounding">54dp</dimen>
 </resources>
