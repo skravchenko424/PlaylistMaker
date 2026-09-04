@@ -21,4 +21,6 @@
     <color name="action_button_color">#FF1A1B22</color>
     <color name="action_button_text_color">#FFFFFFFF</color>
     <color name="pictures_main_color">#FF1A1B22</color>
+    <color name="progress_bar_color">#FF3772E7</color>
+
 </resources>
