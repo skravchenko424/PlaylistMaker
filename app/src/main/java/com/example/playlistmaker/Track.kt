@@ -16,7 +16,7 @@ data class Track(
     val releaseDate: String? = null, // Дата релиза (в формате ISO 8601)
     val primaryGenreName: String? = null, // Жанр трека
     val country: String? = null, // Страна исполнителя
-    val previewUrl: String // Ссылка на отрывок трека
+    val previewUrl: String? = null // Ссылка на отрывок трека
 ) : Parcelable {
 
     val year: String? = parseYear(releaseDate)

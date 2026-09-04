@@ -161,14 +161,14 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        if (previewUrl.isNullOrEmpty()) {
+        val url = previewUrl
+        if (url.isNullOrEmpty()) {
             Log.e("PlayerActivity", "URL is null or empty")
             Toast.makeText(this, "Cannot play: No audio source", Toast.LENGTH_SHORT).show()
             return
         }
 
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
+        mediaPlayer.setDataSource(url)
         mediaPlayer.setOnPreparedListener {
             playButton.isEnabled = true
             playerState = STATE_PREPARED
@@ -176,8 +176,9 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             playButton.setImageResource(R.drawable.ic_play_button_100)
             playerState = STATE_PREPARED
-            progressText.text = "00:00"
+            progressText.text = formatTrackTime(0L)
         }
+        mediaPlayer.prepareAsync()
     }
 
     private fun startPlayer() {
@@ -212,8 +213,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun run() {
                 if(playerState == STATE_PLAYING) {
                     val elapsedTime = mediaPlayer.currentPosition
-                    val seconds = elapsedTime / 1000
-                    progressText.text = String.format("%d:%02d", seconds / 60, seconds % 60)
+                    progressText.text = formatTrackTime(elapsedTime.toLong())
 
                     mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
                 }

@@ -40,12 +40,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: MaterialButton
     private lateinit var progressBar: ProgressBar
 
-    companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val SEARCH_TEXT_DEF = ""
-        private const val ITEM_CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
     private var isTrackClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -289,5 +283,12 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryHeaderText.visibility = View.GONE
         clearHistoryButton.visibility = View.GONE
+    }
+
+    companion object {
+        const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_TEXT_DEF = ""
+        private const val ITEM_CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
