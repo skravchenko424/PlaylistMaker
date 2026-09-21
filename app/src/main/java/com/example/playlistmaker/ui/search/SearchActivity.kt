@@ -19,17 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.dto.TrackSearchResponse
 import com.example.playlistmaker.data.network.ITunesAPIService
 import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.models.SearchResult
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -173,55 +168,26 @@ class SearchActivity : AppCompatActivity() {
         }
 
         trackInteractor.searchTracks(searchText, "song", object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTracks: List<Track>) {
+            override fun consume(result: SearchResult) {
                 handler.post {
                     progressBar.visibility = View.GONE
-                    if (foundTracks.isNotEmpty()) {
-                        trackList.clear()
-                        trackList.addAll(foundTracks)
-                        trackAdapter.notifyDataSetChanged()
-                    } else {
-                        trackList.clear()
-                        trackAdapter.notifyDataSetChanged()
-                        showNothingFound()
+
+                    when (result) {
+                        is SearchResult.Success -> {
+                            trackList.clear()
+                            trackList.addAll(result.tracks)
+                            trackAdapter.notifyDataSetChanged()
+                            if (result.tracks.isEmpty()) showNothingFound()
+                        }
+                        is SearchResult.NetworkError -> {
+                            trackList.clear()
+                            trackAdapter.notifyDataSetChanged()
+                            showNetworkError()
+                        }
                     }
                 }
             }
         })
-
-
-        /*itunesService.searchTracks(searchText).enqueue(object : Callback<TrackSearchResponse> {
-            override fun onResponse(call: Call<TrackSearchResponse>, response: Response<TrackSearchResponse>) {
-                progressBar.visibility = View.GONE
-                if (response.isSuccessful) {
-                    val searchResponse = response.body()
-                    if (searchResponse != null && searchResponse.results.isNotEmpty()) {
-                        trackList.clear()
-                        trackList.addAll(searchResponse.results)
-                        trackAdapter.notifyDataSetChanged()
-                    } else {
-                        // No results found
-                        trackList.clear()
-                        trackAdapter.notifyDataSetChanged()
-                        showNothingFound()
-                    }
-                } else {
-                    // Error response
-                    trackList.clear()
-                    trackAdapter.notifyDataSetChanged()
-                    showNetworkError()
-                }
-            }
-
-            override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                progressBar.visibility = View.GONE
-
-                // Network failure
-                trackList.clear()
-                trackAdapter.notifyDataSetChanged()
-                showNetworkError()
-            }
-        })*/
     }
 
     private val searchRunnable = Runnable { performSearch() }

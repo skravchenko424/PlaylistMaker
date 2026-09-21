@@ -15,17 +15,20 @@ class RetrofitNetworkClient : NetworkClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val imdbService = retrofit.create(ITunesAPIService::class.java)
+    private val itunesService = retrofit.create(ITunesAPIService::class.java)
 
     override fun doRequest(dto: Any): Response {
-        if (dto is TrackSearchRequest) {
-            val resp = imdbService.searchTracks(dto.searchText).execute()
-
-            val body = resp.body() ?: Response()
-
-            return body.apply { resultCode = resp.code() }
-        } else {
+        if (dto !is TrackSearchRequest) {
             return Response().apply { resultCode = 400 }
+        }
+
+        return try {
+            val resp = itunesService.searchTracks(dto.searchText).execute()
+            val body = resp.body() ?: Response()
+            body.apply { resultCode = resp.code() }
+        } catch (e: Exception) {
+            // network failure — sentinel code so repository can map it
+            Response().apply { resultCode = -1 }
         }
     }
 }
