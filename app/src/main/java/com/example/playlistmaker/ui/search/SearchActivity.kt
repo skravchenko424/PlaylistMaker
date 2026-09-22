@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.network.ITunesAPIService
+import com.example.playlistmaker.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.SearchResult
 import com.example.playlistmaker.domain.models.Track
@@ -30,17 +30,17 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackAdapter: TracksAdapter
     private val trackList = mutableListOf<Track>()
-    private lateinit var itunesService: ITunesAPIService
+    private lateinit var searchHistory: SearchHistoryInteractor
     private lateinit var placeHolder: ImageView
     private lateinit var errorText: TextView
     private lateinit var reloadButton: MaterialButton
     private lateinit var inputEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var trackListView: RecyclerView
-    private lateinit var searchHistory: SearchHistory
     private lateinit var searchHistoryHeaderText: TextView
     private lateinit var clearHistoryButton: MaterialButton
     private lateinit var progressBar: ProgressBar
+
 
     private lateinit var trackInteractor: TrackInteractor
 
@@ -57,9 +57,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize SearchHistory
-        val sharedPreferences = getSharedPreferences("playlist_maker_prefs", MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
+        searchHistory = Creator.provideSearchHistoryInteractor(this)
 
         findViewById<ImageView>(R.id.back_from_search_button).setOnClickListener {
             finish()
