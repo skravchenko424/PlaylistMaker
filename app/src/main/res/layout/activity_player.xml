@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:id="@+id/main"
     android:fillViewport="true"
-    tools:context=".ui.player.PlayerActivity"
+    tools:context=".presentation.player.PlayerActivity"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
