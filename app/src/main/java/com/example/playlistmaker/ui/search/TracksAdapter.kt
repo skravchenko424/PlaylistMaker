@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.search.TracksViewHolder
 import com.example.playlistmaker.domain.models.Track
 
 class TracksAdapter(
-    private val news: List<Track>,
+    private val tracks: List<Track>,
     private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
@@ -18,11 +17,11 @@ class TracksAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        holder.bind(news[position])
+        holder.bind(tracks[position])
     }
 
     override fun getItemCount(): Int {
-        return news.size
+        return tracks.size
     }
 
 }

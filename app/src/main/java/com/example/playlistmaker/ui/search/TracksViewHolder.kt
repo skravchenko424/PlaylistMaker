@@ -19,14 +19,9 @@ class TracksViewHolder(itemView: View,
     private val artistName: TextView = itemView.findViewById(R.id.artist_name)
     private val coverImage: ImageView = itemView.findViewById(R.id.track_image)
 
-    // Кешируем SimpleDateFormat один раз на уровне ViewHolder
-    private val dateFormat by lazy {
-        SimpleDateFormat("mm:ss", Locale.getDefault())
-    }
-
     fun bind(model: Track) {
         trackName.text = model.trackName
-        artistName.text = model.artistName + " • " + dateFormat.format(model.trackTimeMillis)
+        artistName.text = model.artistName + " • " + model.trackTime
 
         val roundingRadius = itemView.context.resources
             .getDimensionPixelSize(R.dimen.track_cover_rounding)

@@ -2,11 +2,15 @@ package com.example.playlistmaker.data
 
 import com.example.playlistmaker.data.dto.TrackSearchRequest
 import com.example.playlistmaker.data.dto.TrackSearchResponse
+import com.example.playlistmaker.domain.api.TimeFormatter
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.models.SearchResult
 import com.example.playlistmaker.domain.models.Track
 
-class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
+class TrackRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val timeFormatter: TimeFormatter
+) : TrackRepository {
 
     override fun searchTracks(searchText: String, entity: String): SearchResult {
         val response = networkClient.doRequest(TrackSearchRequest(searchText, entity))
@@ -15,16 +19,17 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             200 -> {
                 val tracks = (response as TrackSearchResponse).results.map {
                     Track(
-                        it.trackId,
-                        it.trackName,
-                        it.artistName,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl
+                        trackId = it.trackId,
+                        trackName = it.trackName,
+                        artistName = it.artistName,
+                        trackTime = timeFormatter.format(it.trackTimeMillis),
+                        artworkUrl100 = it.artworkUrl100,
+                        artworkUrl512 = it.artworkUrl100.replace("100x100", "512x512"),
+                        collectionName = it.collectionName,
+                        releaseDate = it.releaseDate,
+                        primaryGenreName = it.primaryGenreName,
+                        country = it.country,
+                        previewUrl = it.previewUrl
                     )
                 }
                 SearchResult.Success(tracks)
@@ -32,4 +37,5 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             else -> SearchResult.NetworkError("HTTP ${response.resultCode}")
         }
     }
+
 }

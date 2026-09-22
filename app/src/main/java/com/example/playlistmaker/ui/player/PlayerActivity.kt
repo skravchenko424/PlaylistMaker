@@ -15,14 +15,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TimeFormatter
+import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var playButton: ImageView
     private lateinit var progressText: TextView
+    private lateinit var timeFormatter: TimeFormatter
     private var mediaPlayer = MediaPlayer()
 
     companion object {
@@ -57,6 +62,8 @@ class PlayerActivity : AppCompatActivity() {
         playButton.setOnClickListener {
             playbackControl()
         }
+
+        timeFormatter = Creator.provideTimeFormatter()
 
         val track = intent.getParcelableExtra<Track>(Track.Companion.TRACK_EXTRA_NAME)
 
@@ -100,9 +107,9 @@ class PlayerActivity : AppCompatActivity() {
 
         songName.text = track.trackName
         artistName.text = track.artistName
-        durationValue.text = formatTrackTime(track.trackTimeMillis)
+        durationValue.text = track.trackTime
 
-        loadAlbumCover(track.artworkUrl100, albumCover)
+        loadAlbumCover(track.artworkUrl512, albumCover)
 
         previewUrl = track.previewUrl
 
@@ -113,26 +120,13 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun loadAlbumCover(artworkUrl: String, imageView: ImageView) {
-        // Преобразуем URL для получения изображения большего размера
-        val imageUrl = artworkUrl.replace("100x100", "512x512")
-
         val roundingRadius = resources.getDimensionPixelSize(R.dimen.track_cover_rounding_big)
         Glide.with(this)
-            .load(imageUrl)
+            .load(artworkUrl)
             .placeholder(R.drawable.ic_album_image_placeholder_312)
             .centerCrop()
             .transform(RoundedCorners(roundingRadius))
             .into(imageView)
-    }
-
-    private fun formatTrackTime(timeMillis: Long): String {
-        return if (timeMillis > 0) {
-            val minutes = (timeMillis / 1000) / 60
-            val seconds = (timeMillis / 1000) % 60
-            String.Companion.format(Locale.getDefault(), "%d:%02d", minutes, seconds)
-        } else {
-            "0:00"
-        }
     }
 
     private fun <T> setVisibilityWithValue(
@@ -178,7 +172,7 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             playButton.setImageResource(R.drawable.ic_play_button_100)
             playerState = STATE_PREPARED
-            progressText.text = formatTrackTime(0L)
+            progressText.text = timeFormatter.format(0L)
         }
         mediaPlayer.prepareAsync()
     }
@@ -215,7 +209,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun run() {
                 if(playerState == STATE_PLAYING) {
                     val elapsedTime = mediaPlayer.currentPosition
-                    progressText.text = formatTrackTime(elapsedTime.toLong())
+                    progressText.text = timeFormatter.format(elapsedTime.toLong())
 
                     mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
                 }

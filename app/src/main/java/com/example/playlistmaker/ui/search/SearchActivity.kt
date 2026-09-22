@@ -41,7 +41,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: MaterialButton
     private lateinit var progressBar: ProgressBar
 
-
     private lateinit var trackInteractor: TrackInteractor
 
     private var isTrackClickAllowed = true
@@ -103,6 +102,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         findViewById<MaterialButton>(R.id.search_reload_button).setOnClickListener {
+            handler.removeCallbacks(searchRunnable)
             performSearch()
         }
 
@@ -119,6 +119,7 @@ class SearchActivity : AppCompatActivity() {
         // Search on Enter key
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handler.removeCallbacks(searchRunnable)
                 performSearch()
                 true
             }
@@ -156,14 +157,14 @@ class SearchActivity : AppCompatActivity() {
         hideHistory()
         hidePlaceHolder()
 
-        progressBar.visibility = View.VISIBLE
-
         val searchText = inputEditText.text.toString().trim()
 
         if ( searchText.isEmpty() ) {
             showHistory()
             return
         }
+
+        progressBar.visibility = View.VISIBLE
 
         trackInteractor.searchTracks(searchText, "song", object : TrackInteractor.TrackConsumer {
             override fun consume(result: SearchResult) {
@@ -242,15 +243,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistory() {
+        hidePlaceHolder()
         val historyTracks = searchHistory.getTracks()
         if (historyTracks.isNotEmpty()) {
             trackList.clear()
             trackList.addAll(historyTracks)
             trackAdapter.notifyDataSetChanged()
-            hidePlaceHolder()
 
             searchHistoryHeaderText.visibility = View.VISIBLE
             clearHistoryButton.visibility = View.VISIBLE
+
+            hidePlaceHolder()
         }
     }
 
@@ -269,6 +272,8 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryHeaderText.visibility = View.GONE
         clearHistoryButton.visibility = View.GONE
+
+        hidePlaceHolder()
     }
 
     companion object {
