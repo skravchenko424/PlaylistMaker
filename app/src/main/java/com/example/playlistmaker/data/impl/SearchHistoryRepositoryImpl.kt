@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.history
+package com.example.playlistmaker.data.impl
 
 import android.content.Context
 import android.content.SharedPreferences

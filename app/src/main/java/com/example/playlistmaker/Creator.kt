@@ -1,10 +1,10 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import com.example.playlistmaker.data.TrackRepositoryImpl
-import com.example.playlistmaker.data.history.SearchHistoryRepositoryImpl
+import com.example.playlistmaker.data.impl.TrackRepositoryImpl
+import com.example.playlistmaker.data.impl.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.data.settings.ThemePreferenceRepositoryImpl
+import com.example.playlistmaker.data.impl.ThemePreferenceRepositoryImpl
 import com.example.playlistmaker.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.domain.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.api.ThemePreferenceInteractor
