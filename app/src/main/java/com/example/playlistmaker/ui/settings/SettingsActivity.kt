@@ -5,16 +5,19 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.playlistmaker.App
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.ThemePreferenceInteractor
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var themeSwitcher: SwitchMaterial
+    private lateinit var themePreferenceInteractor: ThemePreferenceInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,19 +29,19 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        themePreferenceInteractor = Creator.provideThemeInteractor(this)
+
         findViewById<ImageView>(R.id.back_from_settings_button).setOnClickListener {
             finish()
         }
 
         themeSwitcher = findViewById(R.id.themeSwitcher)
+        themeSwitcher.isChecked = themePreferenceInteractor.isDarkTheme()
 
-        // Устанавливаем состояние переключателя в соответствии с текущей темой
-        val app = applicationContext as App
-        themeSwitcher.isChecked = app.darkTheme
 
-        // Устанавливаем слушатель для переключения темы
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            themePreferenceInteractor.setDarkTheme(checked)
+            applyTheme(checked)
         }
 
         findViewById<ImageView>(R.id.share_button).setOnClickListener {
@@ -69,5 +72,13 @@ class SettingsActivity : AppCompatActivity() {
             )
             startActivity(browserIntent)
         }
+    }
+
+    //apply theme without need to restart the application
+    private fun applyTheme(darkTheme: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
     }
 }
