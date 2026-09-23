@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.App
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.ThemePreferenceInteractor
@@ -38,10 +38,8 @@ class SettingsActivity : AppCompatActivity() {
         themeSwitcher = findViewById(R.id.themeSwitcher)
         themeSwitcher.isChecked = themePreferenceInteractor.isDarkTheme()
 
-
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            themePreferenceInteractor.setDarkTheme(checked)
-            applyTheme(checked)
+            (applicationContext as App).switchTheme(checked)
         }
 
         findViewById<ImageView>(R.id.share_button).setOnClickListener {
@@ -72,13 +70,5 @@ class SettingsActivity : AppCompatActivity() {
             )
             startActivity(browserIntent)
         }
-    }
-
-    //apply theme without need to restart the application
-    private fun applyTheme(darkTheme: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
     }
 }

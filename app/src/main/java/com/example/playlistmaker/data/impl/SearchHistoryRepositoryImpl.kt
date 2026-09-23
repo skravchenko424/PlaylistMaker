@@ -9,11 +9,6 @@ import com.google.gson.reflect.TypeToken
 
 class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
 
-    private companion object {
-        const val PREFS_NAME = "playlist_maker_prefs"
-        const val KEY_HISTORY = "search_history"
-    }
-
     private val sharedPreferences: SharedPreferences =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -32,5 +27,10 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
 
     override fun clear() {
         sharedPreferences.edit().remove(KEY_HISTORY).apply()
+    }
+
+    private companion object {
+        const val PREFS_NAME = "playlist_maker_prefs"
+        const val KEY_HISTORY = "search_history"
     }
 }
