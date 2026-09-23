@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.settings
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,11 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.App
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.ThemePreferenceInteractor
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var themeSwitcher: SwitchMaterial
+    private lateinit var themePreferenceInteractor: ThemePreferenceInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,18 +29,16 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        themePreferenceInteractor = Creator.provideThemeInteractor(this)
+
         findViewById<ImageView>(R.id.back_from_settings_button).setOnClickListener {
             finish()
         }
 
         themeSwitcher = findViewById(R.id.themeSwitcher)
+        themeSwitcher.isChecked = themePreferenceInteractor.isDarkTheme()
 
-        // Устанавливаем состояние переключателя в соответствии с текущей темой
-        val app = applicationContext as App
-        themeSwitcher.isChecked = app.darkTheme
-
-        // Устанавливаем слушатель для переключения темы
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
         }
 
@@ -61,8 +64,10 @@ class SettingsActivity : AppCompatActivity() {
 
 
         findViewById<ImageView>(R.id.license_agreement_button).setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW,
-                getString(R.string.license_agreement_link).toUri())
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                getString(R.string.license_agreement_link).toUri()
+            )
             startActivity(browserIntent)
         }
     }
