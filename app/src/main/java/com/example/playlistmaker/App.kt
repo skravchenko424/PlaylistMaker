@@ -2,7 +2,8 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.api.ThemePreferenceInteractor
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.settings.ThemePreferenceInteractor
 
 const val PLAYLISTMAKER_EXAMPLE_PREFERENCES = "playlistmaker_example_preferences"
 const val DARK_THEME_KEY = "dark_theme"
