@@ -5,22 +5,20 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.settings.ThemePreferenceInteractor
-import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.model.EmailData
+import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: SettingsViewModel
     private lateinit var themeSwitcher: SwitchMaterial
-    private lateinit var themePreferenceInteractor: ThemePreferenceInteractor
-    private lateinit var sharingInteractor: SharingInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,22 +30,23 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        themePreferenceInteractor = Creator.provideThemeInteractor(this)
-        sharingInteractor = Creator.provideSharingInteractor(this)
+        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory(
+            Creator.provideSharingInteractor(this),
+            Creator.provideThemeInteractor(this)))
+            .get(SettingsViewModel::class.java)
 
         findViewById<ImageView>(R.id.back_from_settings_button).setOnClickListener {
             finish()
         }
 
         themeSwitcher = findViewById(R.id.themeSwitcher)
-        themeSwitcher.isChecked = themePreferenceInteractor.isDarkTheme()
-
+        themeSwitcher.isChecked = viewModel.isDarkTheme()
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
         }
 
         findViewById<ImageView>(R.id.share_button).setOnClickListener {
-            sharingInteractor.shareApp(getString(R.string.share_link))
+            viewModel.shareApp(getString(R.string.share_link))
         }
 
         findViewById<ImageView>(R.id.contact_support_button).setOnClickListener {
@@ -58,11 +57,11 @@ class SettingsActivity : AppCompatActivity() {
                 body = getString(R.string.support_text_body)
             )
 
-            sharingInteractor.openSupport(emailData)
+            viewModel.openSupport(emailData)
         }
 
         findViewById<ImageView>(R.id.license_agreement_button).setOnClickListener {
-            sharingInteractor.openTerms(getString(R.string.license_agreement_link))
+            viewModel.openTerms(getString(R.string.license_agreement_link))
         }
     }
 }
