@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
-            android:name=".ui.player.PlayerActivity"
+            android:name=".ui.player.activity.PlayerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.medialibrary.MediaLibraryActivity"

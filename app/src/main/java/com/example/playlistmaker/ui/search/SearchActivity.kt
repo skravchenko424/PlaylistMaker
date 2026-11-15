@@ -23,7 +23,7 @@ import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.TrackInteractor
 import com.example.playlistmaker.domain.search.model.SearchResult
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.google.android.material.button.MaterialButton
 
 class SearchActivity : AppCompatActivity() {

@@ -1,45 +1,29 @@
-package com.example.playlistmaker.ui.player
+package com.example.playlistmaker.ui.player.activity
 
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.utils.TimeFormatter
 import com.example.playlistmaker.domain.search.model.Track
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PAUSED
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PLAYING
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PREPARED
 
 class PlayerActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: PlayerViewModel
+
     private lateinit var playButton: ImageView
     private lateinit var progressText: TextView
-    private lateinit var timeFormatter: TimeFormatter
-    private var mediaPlayer = MediaPlayer()
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-
-        private const val PROGRESS_UPDATE_DELAY = 50L
-    }
-
-    private var mainThreadHandler: Handler? = null
-    private var progressUpdateRunnable: Runnable? = null
-    private var playerState = STATE_DEFAULT
-    private var previewUrl: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,16 +35,12 @@ class PlayerActivity : AppCompatActivity() {
             insets
         }
 
-        mainThreadHandler = Handler(Looper.getMainLooper())
-
-        playButton = findViewById(R.id.button_play)
         progressText = findViewById(R.id.progress)
 
+        playButton = findViewById(R.id.button_play)
         playButton.setOnClickListener {
-            playbackControl()
+            viewModel.togglePlayback()
         }
-
-        timeFormatter = Creator.provideTimeFormatter()
 
         val track = intent.getParcelableExtra<Track>(Track.Companion.TRACK_EXTRA_NAME)
 
@@ -68,7 +48,19 @@ class PlayerActivity : AppCompatActivity() {
             fillTrackData(it)
         }
 
-        preparePlayer()
+        viewModel = ViewModelProvider(this, PlayerViewModel.getFactory(track?.previewUrl ?: ""))
+            .get(PlayerViewModel::class.java)
+
+        viewModel.observeProgress().observe(this) {
+            progressText.text = it
+        }
+
+        viewModel.observePlayerState().observe(this) {
+            when(it) {
+                STATE_PLAYING -> playButton.setImageResource(R.drawable.ic_pause_button_100)
+                STATE_PREPARED, STATE_PAUSED -> playButton.setImageResource(R.drawable.ic_play_button_100)
+            }
+        }
 
         findViewById<ImageView>(R.id.back_from_player_button).setOnClickListener {
             finish()
@@ -77,20 +69,13 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopProgressUpdateTimer()
-        mediaPlayer.release()
+        viewModel.pausePlayer()
     }
 
     private fun fillTrackData(track: Track) {
         val albumCover = findViewById<ImageView>(R.id.album_cover)
         val songName = findViewById<TextView>(R.id.song_name)
         val artistName = findViewById<TextView>(R.id.artist_name)
-        val time = findViewById<TextView>(R.id.progress)
         val durationValue = findViewById<TextView>(R.id.duration_value)
 
         val albumNameLabel = findViewById<TextView>(R.id.album_name)
@@ -107,8 +92,6 @@ class PlayerActivity : AppCompatActivity() {
         durationValue.text = track.trackTime
 
         loadAlbumCover(track.artworkUrl512, albumCover)
-
-        previewUrl = track.previewUrl
 
         setVisibilityWithValue(track.collectionName, albumNameLabel, albumNameValue)
         setVisibilityWithValue(track.year, yearLabel, yearValue)
@@ -139,78 +122,6 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             labelView.visibility = View.GONE
             valueView.visibility = View.GONE
-        }
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
-    private fun preparePlayer() {
-        val url = previewUrl
-        if (url.isNullOrEmpty()) {
-            Log.e("PlayerActivity", "URL is null or empty")
-            Toast.makeText(this, "Cannot play: No audio source", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playButton.setImageResource(R.drawable.ic_play_button_100)
-            playerState = STATE_PREPARED
-            progressText.text = timeFormatter.format(0L)
-        }
-        mediaPlayer.prepareAsync()
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setImageResource(R.drawable.ic_pause_button_100)
-        playerState = STATE_PLAYING
-        startProgressUpdateTimer()
-    }
-
-    private fun pausePlayer() {
-        stopProgressUpdateTimer()
-        mediaPlayer.pause()
-        playButton.setImageResource(R.drawable.ic_play_button_100)
-        playerState = STATE_PAUSED
-    }
-
-    private fun startProgressUpdateTimer() {
-        val runnable = createUpdateProgressTask()
-        progressUpdateRunnable = runnable
-        mainThreadHandler?.post(runnable)
-    }
-
-    private fun stopProgressUpdateTimer() {
-        progressUpdateRunnable?.let {
-            mainThreadHandler?.removeCallbacks(it)
-        }
-        progressUpdateRunnable = null
-    }
-
-    private fun createUpdateProgressTask(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if(playerState == STATE_PLAYING) {
-                    val elapsedTime = mediaPlayer.currentPosition
-                    progressText.text = timeFormatter.format(elapsedTime.toLong())
-
-                    mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
-                }
-            }
         }
     }
 }

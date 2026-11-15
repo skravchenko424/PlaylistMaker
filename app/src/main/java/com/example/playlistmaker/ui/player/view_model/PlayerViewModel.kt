@@ -1,0 +1,119 @@
+package com.example.playlistmaker.ui.player.view_model
+
+import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.utils.TimeFormatter
+
+class PlayerViewModel(private val trackUrl: String) : ViewModel() {
+
+    companion object {
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
+
+        private const val PROGRESS_UPDATE_DELAY = 50L
+
+        fun getFactory(trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(trackUrl)
+            }
+        }
+    }
+
+    private val progressLiveData = MutableLiveData<String>()
+    fun observeProgress(): LiveData<String> = progressLiveData
+
+    private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
+    fun observePlayerState(): LiveData<Int> = playerStateLiveData
+
+    private lateinit var timeFormatter: TimeFormatter
+    private val mediaPlayer = MediaPlayer()
+
+    private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
+    private var progressUpdateRunnable: Runnable? = null
+
+    init {
+        timeFormatter = Creator.provideTimeFormatter()
+        progressLiveData.value = timeFormatter.format(0L)
+        preparePlayer()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayer.release()
+        stopTimer()
+    }
+
+    fun togglePlayback() {
+        when(playerStateLiveData.value) {
+            STATE_PLAYING -> pausePlayer()
+            STATE_PREPARED, STATE_PAUSED -> startPlayer()
+        }
+    }
+
+    private fun preparePlayer() {
+        if (trackUrl.isEmpty()) {
+            Log.e("PlayerActivity", "URL is null or empty")
+            return
+        }
+
+        mediaPlayer.setDataSource(trackUrl)
+        mediaPlayer.setOnPreparedListener {
+            playerStateLiveData.postValue(STATE_PREPARED)
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerStateLiveData.postValue(STATE_PREPARED)
+            progressLiveData.postValue(timeFormatter.format(0L))
+        }
+        mediaPlayer.prepareAsync()
+    }
+
+    fun startPlayer() {
+        mediaPlayer.start()
+        playerStateLiveData.value = STATE_PLAYING
+        startTimer()
+    }
+
+    fun pausePlayer() {
+        stopTimer()
+        mediaPlayer.pause()
+        playerStateLiveData.value = STATE_PAUSED
+    }
+
+    private fun startTimer() {
+        val runnable = createUpdateProgressTask()
+        progressUpdateRunnable = runnable
+        mainThreadHandler?.post(runnable)
+    }
+
+    private fun stopTimer() {
+        progressUpdateRunnable?.let {
+            mainThreadHandler?.removeCallbacks(it)
+        }
+        progressUpdateRunnable = null
+    }
+
+    private fun createUpdateProgressTask(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                if(playerStateLiveData.value == STATE_PLAYING) {
+                    val elapsedTime = mediaPlayer.currentPosition
+                    progressLiveData.postValue(timeFormatter.format(elapsedTime.toLong()))
+
+                    mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
+                }
+            }
+        }
+    }
+
+}
