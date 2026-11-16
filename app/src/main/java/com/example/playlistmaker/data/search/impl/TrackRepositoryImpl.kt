@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.data.search.dto.TrackSearchResponse
 import com.example.playlistmaker.domain.utils.TimeFormatter
 import com.example.playlistmaker.domain.search.TrackRepository
-import com.example.playlistmaker.domain.search.model.SearchResult
+import com.example.playlistmaker.domain.search.model.TrackSearchState
 import com.example.playlistmaker.domain.search.model.Track
 
 class TrackRepositoryImpl(
@@ -13,7 +13,7 @@ class TrackRepositoryImpl(
     private val timeFormatter: TimeFormatter
 ) : TrackRepository {
 
-    override fun searchTracks(searchText: String, entity: String): SearchResult {
+    override fun searchTracks(searchText: String, entity: String): TrackSearchState {
         val response = networkClient.doRequest(TrackSearchRequest(searchText, entity))
 
         return when (response.resultCode) {
@@ -33,9 +33,9 @@ class TrackRepositoryImpl(
                         previewUrl = it.previewUrl
                     )
                 }
-                SearchResult.Success(tracks)
+                TrackSearchState.Success(tracks)
             }
-            else -> SearchResult.NetworkError("HTTP ${response.resultCode}")
+            else -> TrackSearchState.NetworkError("HTTP ${response.resultCode}")
         }
     }
 

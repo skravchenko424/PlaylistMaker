@@ -15,21 +15,6 @@ import com.example.playlistmaker.domain.utils.TimeFormatter
 
 class PlayerViewModel(private val trackUrl: String) : ViewModel() {
 
-    companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-
-        private const val PROGRESS_UPDATE_DELAY = 50L
-
-        fun getFactory(trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(trackUrl)
-            }
-        }
-    }
-
     private val progressLiveData = MutableLiveData<String>()
     fun observeProgress(): LiveData<String> = progressLiveData
 
@@ -112,6 +97,21 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
 
                     mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
                 }
+            }
+        }
+    }
+
+    companion object {
+        const val STATE_DEFAULT = 0
+        const val STATE_PREPARED = 1
+        const val STATE_PLAYING = 2
+        const val STATE_PAUSED = 3
+
+        private const val PROGRESS_UPDATE_DELAY = 50L
+
+        fun getFactory(trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(trackUrl)
             }
         }
     }

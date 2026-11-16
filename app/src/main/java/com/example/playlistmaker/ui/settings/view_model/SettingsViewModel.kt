@@ -10,18 +10,8 @@ import com.example.playlistmaker.domain.sharing.model.EmailData
 
 class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,
-    private val themePreferencesInteractor: ThemePreferenceInteractor,
+    private val themePreferencesInteractor: ThemePreferenceInteractor
 ) : ViewModel() {
-
-    companion object {
-        fun getFactory(sharingInteractor: SharingInteractor, themePreferencesInteractor: ThemePreferenceInteractor):
-                ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SettingsViewModel(sharingInteractor, themePreferencesInteractor)
-            }
-        }
-    }
-
     fun isDarkTheme(): Boolean = themePreferencesInteractor.isDarkTheme()
 
     fun shareApp(link: String) {
@@ -34,5 +24,14 @@ class SettingsViewModel(
 
     fun openSupport(emailData: EmailData) {
         sharingInteractor.openSupport(emailData)
+    }
+
+    companion object {
+        fun getFactory(sharingInteractor: SharingInteractor, themePreferencesInteractor: ThemePreferenceInteractor):
+                ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                SettingsViewModel(sharingInteractor, themePreferencesInteractor)
+            }
+        }
     }
 }
