@@ -21,7 +21,7 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
     private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
     fun observePlayerState(): LiveData<Int> = playerStateLiveData
 
-    private lateinit var timeFormatter: TimeFormatter
+    private var timeFormatter: TimeFormatter
     private val mediaPlayer = MediaPlayer()
 
     private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
