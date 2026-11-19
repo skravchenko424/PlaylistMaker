@@ -17,8 +17,6 @@ class SettingsViewModel(
     private val isDarkThemeLiveData = MutableLiveData<Boolean>()
     fun observeIsDarkTheme(): LiveData<Boolean> = isDarkThemeLiveData
 
-    fun isDarkTheme(): Boolean = themePreferencesInteractor.isDarkTheme()
-
     fun switchTheme(isDarkTheme: Boolean) {
         themePreferencesInteractor.setDarkTheme(isDarkTheme)
         isDarkThemeLiveData.postValue(isDarkTheme)

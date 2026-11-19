@@ -30,12 +30,15 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
+        themeSwitcher = findViewById(R.id.themeSwitcher)
+
         viewModel = ViewModelProvider(this, SettingsViewModel.getFactory(
             Creator.provideSharingInteractor(this),
             Creator.provideThemeInteractor(this)))
             .get(SettingsViewModel::class.java)
 
         viewModel.observeIsDarkTheme().observe(this) {
+            themeSwitcher.isChecked = it
             (applicationContext as App).applyTheme(it)
         }
 
@@ -43,8 +46,6 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        themeSwitcher = findViewById(R.id.themeSwitcher)
-        themeSwitcher.isChecked = viewModel.isDarkTheme()
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.switchTheme(checked)
         }
