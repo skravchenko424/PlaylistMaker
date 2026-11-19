@@ -15,21 +15,22 @@ import com.example.playlistmaker.domain.utils.TimeFormatter
 
 class PlayerViewModel(private val trackUrl: String) : ViewModel() {
 
-    private val progressLiveData = MutableLiveData<String>()
-    fun observeProgress(): LiveData<String> = progressLiveData
+    data class PlayerScreenState(
+        val playerState: Int = STATE_DEFAULT,
+        val progress: String = "00:00"
+    )
 
-    private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
-    fun observePlayerState(): LiveData<Int> = playerStateLiveData
+    private val screenStateLiveData = MutableLiveData(PlayerScreenState())
+    fun observeScreenState(): LiveData<PlayerScreenState> = screenStateLiveData
 
-    private var timeFormatter: TimeFormatter
+    private val timeFormatter: TimeFormatter = Creator.provideTimeFormatter()
     private val mediaPlayer = MediaPlayer()
 
     private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
     private var progressUpdateRunnable: Runnable? = null
 
     init {
-        timeFormatter = Creator.provideTimeFormatter()
-        progressLiveData.value = timeFormatter.format(0L)
+        updateState(progress = timeFormatter.format(0L))
         preparePlayer()
     }
 
@@ -40,7 +41,7 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
     }
 
     fun togglePlayback() {
-        when(playerStateLiveData.value) {
+        when (screenStateLiveData.value?.playerState) {
             STATE_PLAYING -> pausePlayer()
             STATE_PREPARED, STATE_PAUSED -> startPlayer()
         }
@@ -54,25 +55,27 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
 
         mediaPlayer.setDataSource(trackUrl)
         mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(STATE_PREPARED)
+            updateStateAsync(playerState = STATE_PREPARED)
         }
         mediaPlayer.setOnCompletionListener {
-            playerStateLiveData.postValue(STATE_PREPARED)
-            progressLiveData.postValue(timeFormatter.format(0L))
+            updateStateAsync(
+                playerState = STATE_PREPARED,
+                progress = timeFormatter.format(0L)
+            )
         }
         mediaPlayer.prepareAsync()
     }
 
     fun startPlayer() {
         mediaPlayer.start()
-        playerStateLiveData.value = STATE_PLAYING
+        updateState(playerState = STATE_PLAYING)
         startTimer()
     }
 
     fun pausePlayer() {
         stopTimer()
         mediaPlayer.pause()
-        playerStateLiveData.value = STATE_PAUSED
+        updateState(playerState = STATE_PAUSED)
     }
 
     private fun startTimer() {
@@ -91,14 +94,37 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
     private fun createUpdateProgressTask(): Runnable {
         return object : Runnable {
             override fun run() {
-                if(playerStateLiveData.value == STATE_PLAYING) {
+                if (screenStateLiveData.value?.playerState == STATE_PLAYING) {
                     val elapsedTime = mediaPlayer.currentPosition
-                    progressLiveData.postValue(timeFormatter.format(elapsedTime.toLong()))
-
+                    updateStateAsync(progress = timeFormatter.format(elapsedTime.toLong()))
                     mainThreadHandler?.postDelayed(this, PROGRESS_UPDATE_DELAY)
                 }
             }
         }
+    }
+
+    private fun updateState(
+        playerState: Int? = null,
+        progress: String? = null
+    ) {
+        val current = screenStateLiveData.value ?: PlayerScreenState()
+        screenStateLiveData.value = current.copy(
+            playerState = playerState ?: current.playerState,
+            progress = progress ?: current.progress
+        )
+    }
+
+    private fun updateStateAsync(
+        playerState: Int? = null,
+        progress: String? = null
+    ) {
+        val current = screenStateLiveData.value ?: PlayerScreenState()
+        screenStateLiveData.postValue(
+            current.copy(
+                playerState = playerState ?: current.playerState,
+                progress = progress ?: current.progress
+            )
+        )
     }
 
     companion object {
@@ -115,5 +141,4 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
             }
         }
     }
-
 }

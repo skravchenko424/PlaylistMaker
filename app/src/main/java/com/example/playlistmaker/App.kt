@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.settings.ThemePreferenceInteractor
 
-const val PLAYLISTMAKER_EXAMPLE_PREFERENCES = "playlistmaker_example_preferences"
-const val DARK_THEME_KEY = "dark_theme"
-
 class App : Application() {
 
     private lateinit var themePreferenceInteractor: ThemePreferenceInteractor
@@ -19,12 +16,7 @@ class App : Application() {
         applyTheme(themePreferenceInteractor.isDarkTheme())
     }
 
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        themePreferenceInteractor.setDarkTheme(darkThemeEnabled)
-        applyTheme(darkThemeEnabled)
-    }
-
-    private fun applyTheme(darkThemeEnabled: Boolean) {
+    fun applyTheme(darkThemeEnabled: Boolean) {
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES

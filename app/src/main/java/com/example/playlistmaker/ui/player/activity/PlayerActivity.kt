@@ -51,12 +51,9 @@ class PlayerActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, PlayerViewModel.getFactory(track?.previewUrl ?: ""))
             .get(PlayerViewModel::class.java)
 
-        viewModel.observeProgress().observe(this) {
-            progressText.text = it
-        }
-
-        viewModel.observePlayerState().observe(this) {
-            when(it) {
+        viewModel.observeScreenState().observe(this) {
+            progressText.text = it.progress
+            when(it.playerState) {
                 STATE_PLAYING -> playButton.setImageResource(R.drawable.ic_pause_button_100)
                 STATE_PREPARED, STATE_PAUSED -> playButton.setImageResource(R.drawable.ic_play_button_100)
             }

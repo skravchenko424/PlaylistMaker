@@ -29,18 +29,24 @@ class SearchViewModel(
         searchQueryLiveData.value = query
     }
 
+    private var currentQuery: String? = null
+
     fun searchRequest(searchText: String) {
-        if ( searchText.isEmpty() ) {
+        if (searchText.isEmpty()) {
+            currentQuery = null
             renderState(TrackSearchState.SearchHistory(tracks = searchHistory.getTracks()))
             return
         }
 
+        currentQuery = searchText
         renderState(TrackSearchState.Loading)
 
         trackInteractor.searchTracks(searchText, "song", object : TrackInteractor.TrackConsumer {
             override fun consume(result: TrackSearchState) {
                 handler.post {
-                    renderState( result )
+                    if (searchText == currentQuery) {
+                        renderState(result)
+                    }
                 }
             }
         })
