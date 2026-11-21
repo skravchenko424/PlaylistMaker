@@ -7,13 +7,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.utils.TimeFormatter
+import com.example.playlistmaker.utils.TimeFormatter
 
-class PlayerViewModel(private val trackUrl: String) : ViewModel() {
+class PlayerViewModel(
+    private val trackUrl: String,
+    private val timeFormatter: TimeFormatter
+) : ViewModel() {
 
     data class PlayerScreenState(
         val playerState: Int = STATE_DEFAULT,
@@ -23,9 +22,7 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
     private val screenStateLiveData = MutableLiveData(PlayerScreenState())
     fun observeScreenState(): LiveData<PlayerScreenState> = screenStateLiveData
 
-    private val timeFormatter: TimeFormatter = Creator.provideTimeFormatter()
     private val mediaPlayer = MediaPlayer()
-
     private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
     private var progressUpdateRunnable: Runnable? = null
 
@@ -134,11 +131,5 @@ class PlayerViewModel(private val trackUrl: String) : ViewModel() {
         const val STATE_PAUSED = 3
 
         private const val PROGRESS_UPDATE_DELAY = 50L
-
-        fun getFactory(trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(trackUrl)
-            }
-        }
     }
 }
