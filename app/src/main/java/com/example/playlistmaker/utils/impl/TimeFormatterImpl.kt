@@ -1,6 +1,6 @@
-package com.example.playlistmaker.domain.utils.impl
+package com.example.playlistmaker.utils.impl
 
-import com.example.playlistmaker.domain.utils.TimeFormatter
+import com.example.playlistmaker.utils.TimeFormatter
 import java.util.Locale
 
 class TimeFormatterImpl : TimeFormatter {

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.utils
+package com.example.playlistmaker.utils
 
 interface TimeFormatter {
     fun format(millis: Long): String

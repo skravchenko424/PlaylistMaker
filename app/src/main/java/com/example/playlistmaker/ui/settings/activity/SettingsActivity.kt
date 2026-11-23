@@ -9,15 +9,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.sharing.model.EmailData
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
     private lateinit var themeSwitcher: SwitchMaterial
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,11 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         themeSwitcher = findViewById(R.id.themeSwitcher)
-
-        viewModel = ViewModelProvider(this, SettingsViewModel.getFactory(
-            Creator.provideSharingInteractor(this),
-            Creator.provideThemeInteractor(this)))
-            .get(SettingsViewModel::class.java)
 
         viewModel.observeIsDarkTheme().observe(this) {
             themeSwitcher.isChecked = it

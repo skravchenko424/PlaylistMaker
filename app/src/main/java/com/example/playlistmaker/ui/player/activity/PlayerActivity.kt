@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -17,10 +16,13 @@ import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PAUSED
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PLAYING
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel.Companion.STATE_PREPARED
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var viewModel: PlayerViewModel
+    private var track: Track? = null
 
     private lateinit var playButton: ImageView
     private lateinit var progressText: TextView
@@ -35,6 +37,11 @@ class PlayerActivity : AppCompatActivity() {
             insets
         }
 
+        track = intent.getParcelableExtra(Track.TRACK_EXTRA_NAME)
+        viewModel = getViewModel {
+            parametersOf(track?.previewUrl ?: "")
+        }
+
         progressText = findViewById(R.id.progress)
 
         playButton = findViewById(R.id.button_play)
@@ -42,14 +49,9 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.togglePlayback()
         }
 
-        val track = intent.getParcelableExtra<Track>(Track.Companion.TRACK_EXTRA_NAME)
-
         track?.let {
             fillTrackData(it)
         }
-
-        viewModel = ViewModelProvider(this, PlayerViewModel.getFactory(track?.previewUrl ?: ""))
-            .get(PlayerViewModel::class.java)
 
         viewModel.observeScreenState().observe(this) {
             progressText.text = it.progress

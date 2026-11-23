@@ -50,6 +50,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
-
     implementation(libs.glide)
+    implementation("io.insert-koin:koin-android:4.2.2")
 }

@@ -8,31 +8,31 @@ import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.model.EmailData
 
 class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator{
-    override fun shareLink(link: String) {
-        val sendIntent = Intent()
-        sendIntent.setAction(Intent.ACTION_SEND)
-        sendIntent.putExtra(Intent.EXTRA_TEXT, link)
-        sendIntent.setType("text/plain")
+    private fun startActivity(intent: Intent) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
 
-        val shareIntent = Intent.createChooser(sendIntent, context.getString(R.string.share_title))
-        context.startActivity(shareIntent)
+    override fun shareLink(link: String) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, link)
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(sendIntent, context.getString(R.string.share_title)))
     }
 
     override fun openLink(link: String) {
-        val browserIntent = Intent(
-            Intent.ACTION_VIEW,
-            link.toUri()
-        )
-        context.startActivity(browserIntent)
+        startActivity(Intent(Intent.ACTION_VIEW, link.toUri()))
     }
 
     override fun openEmail(emailData: EmailData) {
-        val supportIntent = Intent(Intent.ACTION_SENDTO)
-        supportIntent.data = emailData.mailTo.toUri()
-        supportIntent.putExtra(Intent.EXTRA_EMAIL, emailData.recipients)
-        supportIntent.putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
-        supportIntent.putExtra(Intent.EXTRA_TEXT, emailData.body)
-
-        context.startActivity(supportIntent)
+        val supportIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = emailData.mailTo.toUri()
+            putExtra(Intent.EXTRA_EMAIL, emailData.recipients)
+            putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
+            putExtra(Intent.EXTRA_TEXT, emailData.body)
+        }
+        startActivity(supportIntent)
     }
 }
